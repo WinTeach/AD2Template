@@ -1,4 +1,3 @@
-
 # AD2Template (English)
 
 `AD2Template` is a Python script that generates files from Jinja2 templates using attributes from Active Directory (AD).
@@ -67,6 +66,7 @@ It is possible to use UNC paths and environment variables in the `output_folder`
 ## Usage
 
 The script will fetch the AD attributes of the current user, render the Jinja2 templates located in the `templates` folder, and write the output files to the specified `output_folder`.
+Two demo Jinja templates are available in the `templates` folder.
 
 ### Option 1: Without precompiled binary
 Run the script using the following command:
@@ -91,6 +91,10 @@ To report bugs or request new features, please use the GitHub [Issues](https://g
 ## License
 
 This project is licensed under the GNU GENERAL PUBLIC LICENSE. See the `LICENSE` file for details.
+
+## Author
+
+Tobias Wintrich, [https://winteach.de](https://winteach.de)
 
 ---
 
@@ -162,6 +166,7 @@ Es ist möglich, UNC-Pfade und Umgebungsvariablen in den Einstellungen `output_f
 ## Nutzung
 
 Das Skript ruft die AD-Attribute des aktuellen Benutzers ab, rendert die im `templates`-Ordner befindlichen Jinja2-Vorlagen und schreibt die Ausgabedateien in das angegebene `output_folder`.
+Zwei Demo-Jinja-Vorlagen sind im `templates`-Ordner verfügbar.
 
 ### Option 1: Ohne vorgefertigtes Binary
 Führe das Skript mit folgendem Befehl aus:
@@ -186,3 +191,7 @@ Um Fehler zu melden oder neue Funktionen anzufordern, benutze bitte die GitHub [
 ## Lizenz
 
 Dieses Projekt ist unter der GNU GENERAL PUBLIC LICENSE lizenziert. Siehe die `LICENSE` Datei für Details.
+
+## Autor
+
+Tobias Wintrich, [https://winteach.de](https://winteach.de)
