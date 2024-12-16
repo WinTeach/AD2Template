@@ -20,6 +20,8 @@
 import os
 import logging
 import configparser
+import sys
+
 from pyad import aduser, adquery
 from jinja2 import Environment, FileSystemLoader
 
@@ -27,8 +29,8 @@ class ad2template:
 
     def __init__(self):
         logging.info("Initializing ad2template")
-        self.script_location = os.path.dirname(os.path.realpath(__file__))
-        os.chdir(self.script_location)
+        exe_dir = os.path.dirname(os.path.realpath(sys.executable)) if getattr(sys, 'frozen', False) else os.path.dirname(os.path.realpath(__file__))
+        os.chdir(exe_dir)
 
         # Load configuration settings
         self.config = self.getConfig()
