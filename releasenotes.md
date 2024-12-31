@@ -1,4 +1,4 @@
-# Release Notes for ad2template v1.0.0
+# Release Notes for ad2template v0.9.0
 
 ## New Features
 - Initial release of `ad2template` application.

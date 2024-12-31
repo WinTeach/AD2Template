@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .signature .contact-info {
+            font-size: 14px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .contact-info a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+        .social-icons {
+            margin-top: 20px;
+        }
+        .social-icons a {
+            text-decoration: none;
+            margin-right: 15px;
+            font-size: 18px;
+            color: #0066cc;
+        }
+        social-icons a:hover {
+            color: #004a99;
+        }
+    </style>
+</head>
+<body>
+	<table cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td style="padding-right: 20px;">
+				<img src="https://www.winteach.de/wp-content/uploads/2024/01/icon2014-1.png" alt="winteach logo" width="50" height="50" style="display: block;">
+			</td>
+			<td>
+				<h2 style="margin: 0; font-size: 22px; color: #333333;">{{ cn }}</h2>
+				<p style="margin: 5px 0 0; font-size: 14px; color: #777777;">{{ description }}</p>
+				{% if physicalDeliveryOfficeName %}
+					<p style="margin: 5px 0 0; font-size: 14px; color: #777777;">{{ physicalDeliveryOfficeName }}</p>
+				{% endif %}
+			</td>
+		</tr>
+	</table>
+	 <div class="contact-info">
+            <p><strong>Firma:</strong>winteach.de</p>
+            <p><strong>Telefon:</strong> <a href="tel:{{ telephoneNumber }}">{{ telephoneNumber }}</a></p>
+            <p><strong>E-Mail:</strong> <a href="mailto:{{ mail }}">{{ mail }}</a></p>
+            <p><strong>Web:</strong> <a href="{{ wWWHomePage }}" target="_blank">{{ wWWHomePage }}</a></p>
+        </div>
+	<div class="social-icons">
+		<a href="https://www.linkedin.com/in/tobiaswintrich" target="_blank">LinkedIn</a>
+		<a href="https://www.twitter.com/winteach" target="_blank">Twitter</a>
+		<a href="https://www.instagram.com/winteach" target="_blank">Instagram</a>
+	</div>
+    
+</body>
+</html>
