@@ -6,6 +6,7 @@
 
 - Fetches user attributes from Active Directory.
 - Renders Jinja2 templates with AD attributes.
+- Replace variables in templates file- and folder names with AD attributes.
 - Configurable template and output folders.
 - Supports cleanup of the output folder before generating new files.
 
@@ -65,8 +66,13 @@ It is possible to use UNC paths and environment variables in the `output_folder`
 
 ## Usage
 
-The script will fetch the AD attributes of the current user, render the Jinja2 templates located in the `templates` folder, and write the output files to the specified `output_folder`.
-Two demo Jinja templates are available in the `templates` folder.
+The script will fetch the AD attributes of the current user, render the Jinja2 templates located in the `templates` 
+folder, and write the output files to the specified `output_folder`. Non-template files and folders in the `templates` 
+folder will be copied to the output folder as well.
+All folder, file, and template names can contain variables (e.g.: #variable#_my_file.txt) that will be replaced by the AD attributes.
+Demo Jinja templates, files and folders are available in the `templates` folder.
+
+A fully explained example about using this tool for generating email signatures can be found at [https://winteach.de](https://www.winteach.de/windows-server/active-directory/e-mail-signaturen-aus-ad-daten-generieren-ad2template/) (German only). 
 
 ### Option 1: Without precompiled binary
 Run the script using the following command:
@@ -106,6 +112,7 @@ Tobias Wintrich, [https://winteach.de](https://winteach.de)
 
 - Ruft Benutzerattribute aus Active Directory ab.
 - Rendert Jinja2-Vorlagen mit AD-Attributen.
+- Ersetzt Variablen in Datei- und Ordnernamen in Vorlagen durch AD-Attribute.
 - Konfigurierbare Vorlagen- und Ausgabeverzeichnisse.
 - Unterstützt das Bereinigen des Ausgabeverzeichnisses vor dem Generieren neuer Dateien.
 
@@ -165,8 +172,13 @@ Es ist möglich, UNC-Pfade und Umgebungsvariablen in den Einstellungen `output_f
 
 ## Nutzung
 
-Das Skript ruft die AD-Attribute des aktuellen Benutzers ab, rendert die im `templates`-Ordner befindlichen Jinja2-Vorlagen und schreibt die Ausgabedateien in das angegebene `output_folder`.
-Zwei Demo-Jinja-Vorlagen sind im `templates`-Ordner verfügbar.
+Das Skript ruft die AD-Attribute des aktuellen Benutzers ab, rendert die im `templates`-Ordner 
+befindlichen Jinja2-Vorlagen und schreibt die Ausgabedateien in das angegebene `output_folder`.
+Nicht-Vorlagen-Dateien und -Ordner im `templates`-Ordner werden ebenfalls in das Ausgabeverzeichnis kopiert.
+Alle Ordner-, Datei- und Vorlagennamen können Variablen enthalten (z.B.: #variable#_meine_datei.txt), die durch die AD-Attribute ersetzt werden.
+Demo Jinja-Vorlagen, Dateien und Ordner sind im `templates`-Ordner verfügbar.
+
+Ein ausführliches Beispiel zur Verwendung dieses Tools zur Generierung von E-Mail-Signaturen findet ihr unter [https://winteach.de](https://www.winteach.de/windows-server/active-directory/e-mail-signaturen-aus-ad-daten-generieren-ad2template/).
 
 ### Option 1: Ohne vorgefertigtes Binary
 Führe das Skript mit folgendem Befehl aus:

@@ -20,46 +20,80 @@
 import os
 import logging
 import configparser
+import shutil
 import sys
 
 from pyad import aduser, adquery
 from jinja2 import Environment, FileSystemLoader
+from tkinter import messagebox
 
 class ad2template:
 
     def __init__(self):
-        logging.info("Initializing ad2template")
-        exe_dir = os.path.dirname(os.path.realpath(sys.executable)) if getattr(sys, 'frozen', False) else os.path.dirname(os.path.realpath(__file__))
-        os.chdir(exe_dir)
-
-        # Load configuration settings
-        self.config = self.getConfig()
-
         # Set up logging configuration
         logging.basicConfig(
             format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s %(lineno)s - %(funcName)s: %(message)s',
             datefmt='%Y-%m-%d %H:%M:%S'
         )
+        logging.getLogger().setLevel(getattr(logging, 'ERROR'))
+
+        exe_dir = os.path.dirname(os.path.realpath(sys.executable)) if getattr(sys, 'frozen', False) else os.path.dirname(os.path.realpath(__file__))
+        os.chdir(exe_dir)
+
+        # Load configuration settings
+        self.config = self.getConfig()
         logging.getLogger().setLevel(getattr(logging, self.config['log_level'].upper()))
 
+        logging.info("Initializing ad2template completed")
+
     def writeTemplates(self):
-        # Get Active Directory attributes to use in templates
-        template_vars = self.getAdAttributes()
+        try:
+            template_vars = self.getAdAttributes()
+        except Exception as e:
+            logging.error(e)
+            messagebox.showerror("Error", str(e))
+            exit(1)
 
         logging.info("Writing Templates")
 
-        # Set up Jinja2 environment
-        env = Environment(loader=FileSystemLoader(self.config['template_folder']))
-        for template in env.list_templates():
+        env = Environment(loader=FileSystemLoader(self.config['template_folder'], encoding='windows-1252'))
+        templates = env.list_templates('.jinja')
+
+        for template in templates:
             jinja_template = env.get_template(template)
             output_filename = template.replace('.jinja', '')
+            output_filename = self.replace_vars_in_path(output_filename, template_vars)
+            output_path = os.path.join(self.config['output_folder'], output_filename)
+
+            self.create_directory_if_not_exists(os.path.dirname(output_path))
+
             rendered = jinja_template.render(template_vars)
-            # Write rendered template to output folder
-            with open(f"{self.config['output_folder']}/{output_filename}", "w") as f:
+            with open(output_path, "w", encoding='windows-1252') as f:
                 logging.debug(f"Writing {output_filename}")
                 f.write(rendered)
 
         logging.info("All template files written")
+
+        logging.info("Copying non-template files and Folders")
+        for item in os.listdir(self.config['template_folder']):
+            source_item = os.path.join(self.config['template_folder'], item)
+            destination_item = os.path.join(self.config['output_folder'], item)
+            destination_item = self.replace_vars_in_path(destination_item, template_vars)
+
+            if os.path.isdir(source_item):
+                shutil.copytree(source_item, destination_item, ignore=shutil.ignore_patterns('*.jinja'), dirs_exist_ok=True)
+            elif not item.endswith('.jinja'):
+                shutil.copy2(source_item, destination_item)
+        logging.info("All non-template files and folders copied")
+
+    def create_directory_if_not_exists(self, directory):
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+    def replace_vars_in_path(self, path, template_vars):
+        for var, value in template_vars.items():
+            path = path.replace(f"#{var}#", str(value))
+        return path
 
     def getAdAttributes(self):
         logging.info("Getting AD Attributes")
@@ -93,24 +127,34 @@ class ad2template:
         return template_vars
 
     def getConfig(self):
-        logging.info("Reading config.ini")
+        #Check if config.ini exists
+        if not os.path.exists('config.ini'):
+            logging.error("config.ini not found")
+            messagebox.showerror("Error", "config.ini not found")
+            exit(1)
+
         config = {}
 
-        configParser = configparser.ConfigParser(interpolation=None)
-        configParser.optionxform = str
-        configParser.sections()
+        config_parser = configparser.ConfigParser(interpolation=None)
+        config_parser.optionxform = str
+        config_parser.sections()
 
         # Read configuration file
-        configParser.read('config.ini', encoding='utf-8')
-        for key, val in configParser["CONFIG"].items():
+        config_parser.read('config.ini', encoding='utf-8')
+        try:
+            config_items = config_parser.items("CONFIG")
+        except configparser.NoSectionError:
+            logging.error("No CONFIG section found in config.ini")
+            messagebox.showerror("Error", "No CONFIG section found in config.ini")
+            exit(1)
+
+        for key, val in config_items:
             if val.lower() == 'false':
                 config[key] = False
             elif val.lower() == 'true':
                 config[key] = True
             elif val != '':
                 config[key] = os.path.expandvars(val)
-
-        logging.debug("Config:\n %s", config)
 
         # Set default values for missing configuration options
         if 'template_folder' not in config:
@@ -129,7 +173,8 @@ class ad2template:
         if not os.path.exists(config['output_folder']):
             os.makedirs(config['output_folder'])
         elif config['cleanup_output_folder']:
-            for file in os.listdir(config['output_folder']):
-                os.remove(f"{config['output_folder']}/{file}")
+            #Remove files and Folders
+            shutil.rmtree(config['output_folder'])
+            os.makedirs(config['output_folder'])
 
         return config
